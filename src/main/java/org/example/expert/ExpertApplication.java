@@ -1,5 +1,6 @@
 package org.example.expert;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -11,6 +12,12 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 public class ExpertApplication {
 
     public static void main(String[] args) {
+        Dotenv dotenv = Dotenv.configure()
+                .ignoreIfMissing()
+                .load();
+        dotenv.entries().forEach(e->
+                System.setProperty(e.getKey(), e.getValue())
+        );
         SpringApplication.run(ExpertApplication.class, args);
     }
 
