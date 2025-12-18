@@ -33,24 +33,23 @@ public class ManagerService {
 
     @Transactional
     public ManagerSaveResponse saveManager(
+            AuthUser authUser,
             long todoId,
             ManagerSaveRequest request
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long requesterId = (Long) authentication.getPrincipal();
-
+        User user = User.fromAuthUser(authUser);
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() ->
                         new InvalidRequestException("Todo not found"));
 
-        if (!todo.getUser().getId().equals(requesterId)) {
+        if (!todo.getUser().getId().equals(user.getId())) {
             throw new InvalidRequestException("일정을 만든 사용자만 담당자를 등록할 수 있습니다.");
         }
 
         User targetUser = userRepository.findById(request.getManagerUserId())
                 .orElseThrow(() -> new InvalidRequestException("등록하려는 유저가 존재하지 않습니다."));
 
-        if (requesterId.equals(targetUser.getId())) {
+        if (user.getId().equals(targetUser.getId())) {
             throw new InvalidRequestException("일정 작성자는 본인을 담당자로 등록할 수 없습니다.");
         }
 
