@@ -3,7 +3,6 @@ package org.example.expert.auth.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.expert.auth.filter.JwtAuthenticationFilter;
-import org.example.expert.config.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
