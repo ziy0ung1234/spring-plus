@@ -24,10 +24,10 @@ public class TodoController {
 
     @PostMapping("/todos")
     public ResponseEntity<TodoSaveResponse> saveTodo(
-            @AuthenticationPrincipal AuthUser authUser,
+            @AuthenticationPrincipal Long userId,
             @Valid @RequestBody TodoSaveRequest todoSaveRequest
     ) {
-        return ResponseEntity.ok(todoService.saveTodo(authUser, todoSaveRequest));
+        return ResponseEntity.ok(todoService.saveTodo(userId, todoSaveRequest));
     }
 
     @GetMapping("/todos")

@@ -22,11 +22,11 @@ public class CommentController {
 
     @PostMapping("/todos/{todoId}/comments")
     public ResponseEntity<CommentSaveResponse> saveComment(
-            @AuthenticationPrincipal AuthUser authUser,
+            @AuthenticationPrincipal Long userId,
             @PathVariable long todoId,
             @Valid @RequestBody CommentSaveRequest commentSaveRequest
     ) {
-        return ResponseEntity.ok(commentService.saveComment(authUser, todoId, commentSaveRequest));
+        return ResponseEntity.ok(commentService.saveComment(userId, todoId, commentSaveRequest));
     }
 
     @GetMapping("/todos/{todoId}/comments")

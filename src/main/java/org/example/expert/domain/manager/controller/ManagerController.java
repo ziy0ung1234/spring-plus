@@ -22,11 +22,11 @@ public class ManagerController {
 
     @PostMapping("/todos/{todoId}/managers")
     public ResponseEntity<ManagerSaveResponse> saveManager(
-            @AuthenticationPrincipal AuthUser authUser,
+            @AuthenticationPrincipal Long userId,
             @PathVariable long todoId,
             @Valid @RequestBody ManagerSaveRequest managerSaveRequest
     ) {
-        return ResponseEntity.ok(managerService.saveManager(authUser, todoId, managerSaveRequest));
+        return ResponseEntity.ok(managerService.saveManager(userId, todoId, managerSaveRequest));
     }
 
     @GetMapping("/todos/{todoId}/managers")
@@ -36,10 +36,10 @@ public class ManagerController {
 
     @DeleteMapping("/todos/{todoId}/managers/{managerId}")
     public void deleteManager(
-            @AuthenticationPrincipal AuthUser authUser,
+            @AuthenticationPrincipal Long userId,
             @PathVariable long todoId,
             @PathVariable long managerId
     ) {
-        managerService.deleteManager(authUser, todoId, managerId);
+        managerService.deleteManager(userId, todoId, managerId);
     }
 }
