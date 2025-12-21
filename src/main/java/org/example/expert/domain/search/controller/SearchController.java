@@ -3,6 +3,7 @@ package org.example.expert.domain.search.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.search.service.SearchService;
 import org.example.expert.domain.todo.dto.response.TodoSearchResponse;
+import org.example.expert.domain.user.dto.response.UserSearchResponse;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -45,6 +46,13 @@ public class SearchController {
                         pageable
                 )
         );
+    }
+
+    @GetMapping("users/search")
+    public ResponseEntity<UserSearchResponse> searchUserNickname(
+            @RequestParam String nickname
+    ) {
+        return ResponseEntity.ok(searchService.searchUser(nickname));
     }
 
 }
