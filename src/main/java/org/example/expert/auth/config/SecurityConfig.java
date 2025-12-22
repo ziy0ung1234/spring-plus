@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 인증 필터는 항상 UsernamePasswordAuthenticationFilter 앞에 위치해야 한다.
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
+                        .requestMatchers("/health-check/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

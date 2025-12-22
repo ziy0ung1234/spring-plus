@@ -20,7 +20,7 @@ services:
       retries: 10
 
   spring:
-    image: spring-plus
+    image: plus
     container_name: spring-app
     env_file:
       - .env

@@ -32,13 +32,7 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-        return request.getRequestURI().startsWith("/auth/");
-    }
 
-    //Authentication을 만들고 SecurityContext에 넣어주는 메서드
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -46,11 +40,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT 토큰이 필요합니다.");
+
+        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
             return;
         }
-
         try {
             String token = jwtUtil.substringToken(bearerToken);
             Claims claims = jwtUtil.extractClaims(token);
@@ -69,10 +63,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(request, response);
 
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 JWT 토큰입니다.");
+            return;
         }
+        filterChain.doFilter(request, response);
     }
 }
