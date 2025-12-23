@@ -1,3 +1,23 @@
+## 서비스 설정 화면
+### EC2
+<img width="1000" height="500" alt="스크린샷 2025-12-22 오전 10 23 47" src="https://github.com/user-attachments/assets/0bea0a16-d7a5-40bb-a6f0-abba77218077" />
+
+### RDS
+<img width="1000" height="500" alt="스크린샷 2025-12-22 오전 10 24 19" src="https://github.com/user-attachments/assets/8c826ca0-5faf-4ec0-b0bd-ac4790b1f2bd" />
+
+### S3
+<img width="703" height="500" alt="스크린샷 2025-12-23 오후 10 31 05" src="https://github.com/user-attachments/assets/037a72d9-1fd9-4b1f-9cf8-0d247bb19314" />
+
+### IAM
+<img width="1000" height="500" alt="스크린샷 2025-12-23 오후 10 24 50" src="https://github.com/user-attachments/assets/07437bd7-c647-4709-91c6-b85a60c12491" />
+
+## 12-2.health-check
+<img width="1000" height="500" alt="스크린샷 2025-12-22 오후 2 50 41" src="https://github.com/user-attachments/assets/2df43433-75df-4776-bf26-e32961075d64" />
+
+## 12-3. 이미지 업로드
+<img width="1000" height="200" alt="스크린샷 2025-12-23 오후 9 57 59" src="https://github.com/user-attachments/assets/673b8bf0-a71e-4d92-801a-b69e8ed5192a" />
+
+
 ## 조회 성능 개선 실험 결과 비교
 
 ### 실험 전제
