@@ -16,6 +16,7 @@
 
 ## 12-3. 이미지 업로드
 <img width="1000" height="200" alt="스크린샷 2025-12-23 오후 9 57 59" src="https://github.com/user-attachments/assets/673b8bf0-a71e-4d92-801a-b69e8ed5192a" />
+<img width="765" height="251" alt="스크린샷 2025-12-23 오후 9 57 12" src="https://github.com/user-attachments/assets/9cb2e57f-9237-4bc2-b67e-ba4f588f452e" />
 
 
 ## 조회 성능 개선 실험 결과 비교
