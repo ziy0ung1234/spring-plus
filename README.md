@@ -33,16 +33,34 @@
 
 ---
 
-### 단계별 조회 성능 비교
+## 📊 성능 비교 요약
 
-| 단계 | 적용 방식 | 주요 개선 포인트 | 실행 계획 요약 | 조회 시간 |
-|------|-----------|------------------|----------------|-----------|
-| **Baseline** | 인덱스 없음 | 전체 테이블 스캔 | Table Scan (5M rows) | **약 3600ms** |
-| 1 | DTO Projection | 엔티티 로딩 제거 | Table Scan 유지 | 약 3046ms |
-| 2 | BTREE Index | 테이블 스캔 제거 | Index Lookup + PK 접근 | 약 1ms |
-| 3 | UNIQUE Index | 논리적 단건 보장 | Index Lookup + PK 접근 | 약 0.3ms |
-| 4 | Covering Index | 테이블 접근 제거 | Index Only Scan | **약 0.03ms** |
-| 5 | Spring Cache (HIT) | DB 접근 자체 제거 | DB 실행 X | **API 기준 10ms 이하** |
+### DB 실행 시간 기준 (EXPLAIN ANALYZE)
+
+| 적용 방식 | 실행 계획 요약 | DB 실행 시간 |
+|---------|--------------|-------------|
+| 인덱스 없음 | Full Table Scan | 약 **2600ms** |
+| DTO Projection | Table Scan 유지 | 약 2500ms |
+| BTREE Index | Index Lookup + PK 접근 | 약 **0.26ms** |
+| UNIQUE Index | Index Lookup + PK 접근 | 약 **0.19ms** |
+| Covering Index | **Index Only Scan** | 약 **0.03ms** |
+
+---
+
+### API 전체 응답 시간 기준 (Postman)
+
+| 적용 방식 | API 응답 시간 |
+|---------|--------------|
+| 인덱스 없음 | 약 **3.53s** |
+| DTO Projection | 약 3.04s |
+| BTREE Index | 약 **0.36s** |
+| UNIQUE Index | 약 0.46s |
+| Covering Index | 약 **0.36s** |
+| Spring Cache (HIT) | **10ms 이하** |
+
+>  **참고**  
+> 커버링 인덱스 이후 DB 실행 시간은 극적으로 감소했지만,  
+> API 응답 시간은 애플리케이션 레벨의 고정 오버헤드 영향으로 큰 차이가 나타나지 않는다.
 
 ---
 
