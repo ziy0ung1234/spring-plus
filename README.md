@@ -51,11 +51,11 @@
 
 | 적용 방식 | API 응답 시간 |
 |---------|--------------|
-| 인덱스 없음 | 약 **3.53s** |
-| DTO Projection | 약 3.04s |
-| BTREE Index | 약 **0.36s** |
-| UNIQUE Index | 약 0.46s |
-| Covering Index | 약 **0.36s** |
+| 인덱스 없음 | 약 **3530ms** |
+| DTO Projection | 약 3040ms |
+| BTREE Index | 약 **360ms** |
+| UNIQUE Index | 약 460ms |
+| Covering Index | 약 **360ms** |
 | Spring Cache (HIT) | **10ms 이하** |
 
 >  **참고**  
