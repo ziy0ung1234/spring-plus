@@ -12,14 +12,13 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class S3Uploader implements FileUploader {
+public class S3Uploader{
 
     private final AmazonS3 amazonS3;
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Override
     public S3UploadResult upload(MultipartFile file, String dir) {
 
         String extension = getExtension(file.getOriginalFilename());
