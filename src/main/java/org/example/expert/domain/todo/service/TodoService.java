@@ -53,28 +53,14 @@ public class TodoService {
     }
 
     public Page<TodoResponse> getTodos(
-            int page,
-            int size,
+            Pageable pageable,
             String weather,
             LocalDateTime startDate,
             LocalDateTime endDate
     ) {
-        Pageable pageable = PageRequest.of(
-                page - 1,
-                size,
-                Sort.by(Sort.Direction.DESC, "modifiedAt")
-        );
-        Page<Todo> todos = todoRepository.searchTodos( weather, startDate, endDate, pageable);
-
-        return todos.map(todo -> new TodoResponse(
-                todo.getId(),
-                todo.getTitle(),
-                todo.getContents(),
-                todo.getWeather(),
-                new UserResponse(todo.getUser().getId(), todo.getUser().getEmail()),
-                todo.getCreatedAt(),
-                todo.getModifiedAt()
-        ));
+        return todoRepository
+                .searchTodosByCondition(weather, startDate, endDate, pageable)
+                .map(TodoResponse::from);
     }
 
     public TodoResponse getTodo(long todoId) {

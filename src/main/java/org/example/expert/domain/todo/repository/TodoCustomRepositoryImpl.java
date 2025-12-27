@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.todo.dto.response.QTodoSearchResponse;
 import org.example.expert.domain.todo.dto.response.TodoSearchResponse;
+import org.example.expert.domain.todo.entity.QTodo;
 import org.example.expert.domain.todo.entity.Todo;
 import org.springframework.data.domain.*;
 
@@ -78,6 +79,36 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
         return new PageImpl<>(result, pageable, total == null? 0:total);
     }
 
+    @Override
+    public Page<Todo> searchTodosByCondition(
+            String weather,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Pageable pageable
+    ) {
+        List<Todo> result = queryFactory
+                .selectFrom(todo)
+                .where(
+                        weatherEq(weather),
+                        modifiedAtGoe(startDate),
+                        modifiedAtLoe(endDate)
+                )
+                .orderBy(todo.modifiedAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        Long total = queryFactory
+                .select(todo.count())
+                .from(todo)
+                .where(
+                        weatherEq(weather),
+                        modifiedAtGoe(startDate),
+                        modifiedAtLoe(endDate)
+                )
+                .fetchOne();
+        return new PageImpl<>(result, pageable, total == null? 0:total);
+    }
+
     // ------ BooleanExpression ------
     private BooleanExpression titleCondition(String query) {
         return isNotEmpty(query) ? todo.title.contains(query) : null;
@@ -91,7 +122,15 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
     private BooleanExpression endDateCondition(LocalDateTime endDate) {
         return endDate != null ? todo.createdAt.loe(endDate) : null;
     }
-
+    private BooleanExpression weatherEq(String weather) {
+        return weather != null ? todo.weather.eq(weather) : null;
+    }
+    private BooleanExpression modifiedAtGoe(LocalDateTime startDate) {
+        return startDate != null ? todo.modifiedAt.goe(startDate) : null;
+    }
+    private BooleanExpression modifiedAtLoe(LocalDateTime endDate) {
+        return endDate != null ? todo.modifiedAt.loe(endDate) : null;
+    }
 
     private boolean isNotEmpty(String query) {
         return query != null && !query.isEmpty();
