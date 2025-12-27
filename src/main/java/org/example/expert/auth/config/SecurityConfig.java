@@ -2,6 +2,7 @@ package org.example.expert.auth.config;
 
 
 import lombok.RequiredArgsConstructor;
+import org.example.expert.auth.filter.JwtAuthenticationEntryPoint;
 import org.example.expert.auth.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,6 +30,9 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable) // BasicAuthenticationFilter 비활성화
                 .formLogin(AbstractHttpConfigurer::disable) // UsernamePasswordAuthenticationFilter, DefaultLoginPageGeneratingFilter 비활성화
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 인증 필터는 항상 UsernamePasswordAuthenticationFilter 앞에 위치해야 한다.
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(authenticationEntryPoint)
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
                         .requestMatchers("/health-check/**").permitAll()

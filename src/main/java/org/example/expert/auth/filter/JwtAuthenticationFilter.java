@@ -1,6 +1,7 @@
 package org.example.expert.auth.filter;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,9 +40,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        String bearerToken = request.getHeader("Authorization");
+        String bearerToken = request.getHeader(JwtConstant.AUTHORIZATION.getValue());
 
-        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+        if (bearerToken == null || !bearerToken.startsWith(JwtConstant.BEARER.getValue())) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String role = claims.get("userRole", String.class);
 
             List<GrantedAuthority> authorities =
-                    List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                    List.of(new SimpleGrantedAuthority(JwtConstant.ROLE.getValue() + role));
 
             Authentication authentication =
                     new UsernamePasswordAuthenticationToken(
@@ -64,9 +65,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 JWT 토큰입니다.");
-            return;
+        } catch (JwtException | IllegalArgumentException e) {
+            SecurityContextHolder.clearContext();
+            throw e;
         }
         filterChain.doFilter(request, response);
     }
