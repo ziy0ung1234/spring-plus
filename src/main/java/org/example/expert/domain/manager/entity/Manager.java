@@ -41,7 +41,10 @@ public class Manager {
         return new Manager(targetUser, todo);
     }
 
-    public void validateManager(Todo todo) {
+    public void validateDeletableManager(User requestUser,Todo todo) {
+        if (!todo.getUser().getId().equals(requestUser.getId())) {
+            throw new InvalidRequestException("일정을 만든 사용자만 담당자를 삭제할 수 있습니다.");
+        }
         if (!this.todo.getId().equals(todo.getId())) {
             throw new InvalidRequestException("해당 일정에 등록된 담당자가 아닙니다.");
         }
