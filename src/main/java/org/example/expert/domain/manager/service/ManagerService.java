@@ -9,12 +9,15 @@ import org.example.expert.domain.manager.dto.request.ManagerSaveRequest;
 import org.example.expert.domain.manager.dto.response.ManagerResponse;
 import org.example.expert.domain.manager.dto.response.ManagerSaveResponse;
 import org.example.expert.domain.manager.entity.Manager;
+import org.example.expert.domain.manager.event.ManagerRegisterFailEvent;
+import org.example.expert.domain.manager.event.ManagerRegisterSuccessEvent;
 import org.example.expert.domain.manager.repository.ManagerRepository;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponse;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -31,6 +34,7 @@ public class ManagerService {
     private final UserRepository userRepository;
     private final TodoRepository todoRepository;
     private final LogService logService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public ManagerSaveResponse saveManager(
@@ -45,28 +49,22 @@ public class ManagerService {
             Todo todo = todoRepository.findById(todoId)
                     .orElseThrow(() ->
                             new InvalidRequestException("Todo not found"));
-
-            if (!todo.getUser().getId().equals(requestUser.getId())) {
-                throw new InvalidRequestException("일정을 만든 사용자만 담당자를 등록할 수 있습니다.");
-            }
-
             targetUser = userRepository.findById(request.getManagerUserId())
                     .orElseThrow(() -> new InvalidRequestException("등록하려는 유저가 존재하지 않습니다."));
 
-            if (requestUser.getId().equals(targetUser.getId())) {
-                throw new InvalidRequestException("일정 작성자는 본인을 담당자로 등록할 수 없습니다.");
-            }
-            //로그 저장
-            logService.save(Log.managerResister(requestUser, targetUser, "매니저 등록 성공"));
-
-            Manager manager = managerRepository.save(new Manager(targetUser, todo));
-
-            return new ManagerSaveResponse(
-                    manager.getId(),
-                    new UserResponse(targetUser.getId(), targetUser.getEmail())
+            Manager manager = Manager.create(requestUser, targetUser, todo);
+            managerRepository.save(manager);
+            //성공 로그
+            eventPublisher.publishEvent(
+                    new ManagerRegisterSuccessEvent(requestUser, targetUser)
             );
+
+            return ManagerSaveResponse.from(manager);
         } catch (Exception e) {
-            logService.save(Log.managerResister(requestUser, targetUser, "매니저 등록 실패 : " + e.getMessage()));
+            //실패 로그
+            eventPublisher.publishEvent(
+                    new ManagerRegisterFailEvent(requestUser, targetUser, e.getMessage())
+            );
             throw e;
         }
     }
