@@ -44,8 +44,8 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
         List<TodoSearchResponse> result = queryFactory
                 .select(new QTodoSearchResponse(
                         todo.title,
-                        manager.count(),
-                        comment.count()
+                        manager.id.countDistinct(),
+                        comment.id.countDistinct()
                 ))
                 .from(todo)
                 .leftJoin(todo.managers, manager)
@@ -64,7 +64,7 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
                 .fetch();
 
         Long total = queryFactory
-                .select(todo.count())
+                .select(todo.id.countDistinct())
                 .from(todo)
                 .leftJoin(todo.managers, manager)
                 .leftJoin(manager.user, user)
