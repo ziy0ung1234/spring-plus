@@ -22,6 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             from User u
             where u.nickname = :nickname
         """)
-    UserSearchResponse findFirstByNickname(@Param("nickname") String nickname);
+    Optional<UserSearchResponse> findExactNickname(@Param("nickname") String nickname);
 
 }

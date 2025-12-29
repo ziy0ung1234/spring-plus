@@ -5,7 +5,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.todo.dto.response.QTodoSearchResponse;
 import org.example.expert.domain.todo.dto.response.TodoSearchResponse;
-import org.example.expert.domain.todo.entity.QTodo;
 import org.example.expert.domain.todo.entity.Todo;
 import org.springframework.data.domain.*;
 

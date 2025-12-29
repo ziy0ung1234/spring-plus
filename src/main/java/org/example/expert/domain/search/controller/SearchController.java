@@ -52,7 +52,7 @@ public class SearchController {
     public ResponseEntity<UserSearchResponse> searchUserNickname(
             @RequestParam String nickname
     ) {
-        return ResponseEntity.ok(searchService.searchUser(nickname));
+        return ResponseEntity.ok(searchService.searchUser(nickname).orElse(null));
     }
 
 }
